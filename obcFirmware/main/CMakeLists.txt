@@ -1,0 +1,9 @@
+idf_component_register(
+    SRCS 
+        "obcFirmware.c"
+        "middleware/bus.c"
+    INCLUDE_DIRS 
+        "."
+        "middleware"
+        "packet"
+)

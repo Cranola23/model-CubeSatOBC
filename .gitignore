@@ -1,0 +1,11 @@
+obcFirmware/build/
+obcFirmware/.cache/
+obcFirmware/sdconfig.old
+
+
+groundStation/venv/
+__pycache__/
+*.pyc
+
+.DS_Store
+*.log
