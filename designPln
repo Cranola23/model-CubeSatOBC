@@ -1,0 +1,206 @@
+🚀 1. Major CubeSat / Small Satellite Subsystems
+
+A satellite is typically divided into functional subsystems, each responsible for a critical aspect of operation. Your OBC will interface with all of these.
+
+🧠 1. OBC (On-Board Computer)
+The “brain” of the satellite
+Runs flight software (FSW)
+Handles:
+Task scheduling
+Command execution
+Data handling
+Fault detection & recovery (FDIR)
+
+👉 For your project: focus on RTOS design, watchdogs, redundancy, and communication buses (I2C, SPI, CAN, UART).
+
+🔋 2. EPS (Electrical Power System)
+Generates, stores, and distributes power
+Components:
+Solar panels
+Battery pack
+Power conditioning & regulation
+Responsibilities:
+Voltage regulation
+Power budgeting
+Load switching
+
+👉 Firmware angle:
+
+Battery monitoring
+Power modes (safe mode, low-power mode)
+Telemetry reporting
+🧭 3. ADCS (Attitude Determination and Control System)
+Controls satellite orientation (where it's pointing)
+Sensors:
+Sun sensors
+Magnetometers
+Gyroscopes
+Actuators:
+Reaction wheels
+Magnetorquers
+
+👉 Firmware angle:
+
+Sensor fusion (e.g., Kalman filters)
+Control loops (PID, state-space)
+Real-time constraints
+📡 4. TT&C (Telemetry, Tracking & Command)
+Communication with ground station
+Handles:
+Uplink (commands)
+Downlink (telemetry/data)
+
+Components:
+
+Transceiver
+Antennas
+Modem/protocol stack
+
+👉 Firmware angle:
+
+Packet protocols (AX.25 commonly used in CubeSats)
+Error detection/correction
+Command parsing
+💾 5. CDH (Command & Data Handling)
+Sometimes merged with OBC
+Manages:
+Data storage
+File systems
+Data routing between subsystems
+
+👉 Firmware angle:
+
+Flash memory management
+Logging systems
+Fault-tolerant storage
+🌡️ 6. Thermal Control System (TCS)
+Keeps components within safe temperatures
+Passive:
+Coatings, insulation
+Active:
+Heaters, sensors
+
+👉 Firmware angle:
+
+Temperature monitoring
+Heater control logic
+🧪 7. Payload
+The mission-specific part (camera, sensor, experiment)
+Can vary widely:
+Imaging
+RF experiments
+Scientific sensors
+
+👉 Firmware angle:
+
+Device drivers
+Data acquisition pipelines
+Scheduling (when to run payload)
+🧱 8. Structure & Mechanisms
+Physical body of the satellite
+Includes:
+Frame
+Deployment systems (antennas, solar panels)
+
+👉 Firmware angle:
+
+Deployment sequencing (burn wires, timers)
+Safety interlocks
+🛰️ 9. Propulsion (optional in CubeSats)
+Used for orbit adjustments
+Includes:
+Thrusters
+Tanks
+
+👉 Firmware angle:
+
+Safety-critical control
+Timing and sequencing
+🔗 How These Connect (Important for OBC Design)
+
+Your OBC acts like a central hub:
+
+         +--------+
+         |  OBC   |
+         +--------+
+         /   |   \
+      EPS   ADCS  TT&C
+       |      |     |
+    Sensors Actuators Radio
+
+Common communication buses:
+
+I2C → sensors
+SPI → high-speed devices
+UART → radios
+CAN → robust subsystem comms (in advanced designs)
+🧩 Key Embedded System Concepts You Should Know
+
+For a realistic CubeSat firmware:
+
+RTOS (e.g., FreeRTOS)
+Fault tolerance (watchdogs, redundancy)
+State machines (SAFE, NOMINAL, DETUMBLE modes)
+Telemetry + telecommand protocols
+Power-aware scheduling
+Radiation effects (bit flips → error correction)
+📚 Where to Learn More (Highly Recommended)
+🛰️ CubeSat-Specific Resources
+CubeSat Design Specification
+→ The baseline standard for CubeSats
+NASA CubeSat Launch Initiative
+→ Has design guides and educational resources
+📘 Books
+Space Mission Engineering: The New SMAD
+→ The bible of spacecraft systems
+CubeSat Handbook
+→ Very practical and CubeSat-focused
+🧑‍💻 Open Source / Practical Learning
+Libre Space Foundation
+SatNOGS
+cFS
+→ Real flight software architecture used by NASA
+🎓 Courses / Lectures
+Search for:
+“CubeSat systems engineering course”
+“ADCS fundamentals spacecraft”
+Many universities (MIT, TU Delft) publish lectures online
+🧭 Final Advice for Your Project
+
+If you're building an OBC-inspired firmware, structure it like this:
+
+Layer 1: Hardware abstraction (drivers)
+Layer 2: Middleware (comms, file system)
+Layer 3: Application tasks (EPS task, ADCS task, etc.)
+Layer 4: System manager (state machine + FDIR)
+
+Start simple:
+
+Simulate EPS + telemetry first
+Add TT&C command handling
+Then integrate ADCS logic
+
+INSANE QUESTION:
+Im makign a cubesat obc inspired embedded firmware system design. What do I need to know about the various components of a satellite spacecraft like OBC,EPS, ADCS, TT&C, CDH, TCS, Payload, Structure and Mechanism, Propulsion(maybe), etc? LOOK AT ALL OF THIS FROM A FIRMWARE DESIGN ANGLE. What are all the components that exist with respect to this sorta spacecraft design, give me a brief overview about it and where can I read more about it??
+
+Design a full CubeSat-style firmware architecture (task breakdown + RTOS layout + comm protocol) tailored to my project, these are my requirements/constraints:
+
+a) I'm using an ESP32 with ESPIDF
+
+b) I have a laptop to act as a ground station of sorts. (use a py script serially). Yes I have a question here too. Is it really authentic if I use UART serial to communicate between ground station and the esp32 OBC? What other option do I have because LoRa isn't something a real satellite even uses and that's just breaking my bank for no reason. 
+
+c) I only bought a gyro, I am not getting a LoRa or any other sensors because I think it's kinda pointless given those sensors are to read space data and I for one live on earth lol
+
+d) I'm instead going to simulate the space sensor data/telemetry
+
+e) probably won't get an sd card for the storage, but I don't mind getting it honestly, im just not sure what i'd be storing. so elaborate on this too.
+
+f) elaborate on the layers you talked about (hardware abstraction(drivers)(wdym drivers??), middleware(comms,filesystem), applicaiton tasks(eps task,adcs task), system manager(state machine, FDIR (WHAT IS THIS??))
+
+g) How do I implement a bus even if all the "real" stuff ive got is one gyro sensor? How do I get it to work? 
+
+h) explain the kinda packets that will be used for communications between satellite OBC and groudn station and/or satellite OBC and other subsystems. I will be using C for my project (ESPIDF duh) so i want some packet definitions like what variables to store inside my packet struct like voltage,power,temperature,etc. Maybe industry standard cubesat packets also work (ax.25/aprs) but since my thing doesn't really have a need for all that (addresses and whatever) recommend a packet protocol that you see fit.
+
+
+
+Anyway I would like a good structure/architecture to follow as I make my project. I've given a few of my constraints here and I need you to follow them. exceptions are allowed where you think it's okay. 

@@ -2,8 +2,11 @@ idf_component_register(
     SRCS 
         "obcFirmware.c"
         "middleware/bus.c"
+        "tasks/eps_task.c"
+        "tasks/cdh_task.c"
     INCLUDE_DIRS 
         "."
         "middleware"
         "packet"
+        "tasks"
 )
