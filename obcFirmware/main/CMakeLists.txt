@@ -4,9 +4,14 @@ idf_component_register(
         "middleware/bus.c"
         "tasks/eps_task.c"
         "tasks/cdh_task.c"
+        "tasks/ttc_task.c"
+        "drivers/uart_gs.c"
+        "sys/state_machine.c"
     INCLUDE_DIRS 
         "."
         "middleware"
         "packet"
         "tasks"
+        "drivers"
+        "sys"
 )
