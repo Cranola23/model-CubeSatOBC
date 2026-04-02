@@ -25,7 +25,7 @@ static void cdh_send_ack(uint8_t seq){
     
     //sending to ttc via bus
     bus_msg_t msg;
-    msg.type = MSG_TELEMETRY; //SUPER HACK. PLEZ FIX TO SUPPORT MSG_COMMAND
+    msg.type = MSG_ACK; 
     msg.src = SUBSYS_CDH;
     msg.dst = SUBSYS_TTC;
 
@@ -52,7 +52,7 @@ static void cdh_handle_cmd(pkt_cmd_t *cmd){
         telem.eps = eps_data;
 
         bus_msg_t msg;
-        msg.type = MSG_TELEMETRY; //SUPER HACK. PLEX FIX TO SUPPORT MSG_COMMAND
+        msg.type = MSG_TELEMETRY; 
         msg.src = SUBSYS_CDH;
         msg.dst = SUBSYS_TTC;
         memcpy(msg.data, &telem, sizeof(telem));

@@ -35,6 +35,9 @@ static void ttc_task(void *pvParameters){
             if(msg.type == MSG_TELEMETRY){
                 ttc_send_telem((pkt_telem_t *)msg.data);
             }
+            if(msg.type == MSG_ACK){
+                uart_gs_send(msg.data, msg.len); //already framed packet (cdh_send_ack())
+            }
         }
         //RX: UART -> CMD -> CDH
         int len = uart_gs_read(rx_buf, sizeof(rx_buf)); 
