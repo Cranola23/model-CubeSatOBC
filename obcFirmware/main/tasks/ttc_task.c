@@ -23,6 +23,7 @@ static uint8_t seq = 0;
 static void ttc_task(void *pvParameters);
 static void ttc_handle_cmd(pkt_cmd_t *cmd);
 static void ttc_send_telem(pkt_telem_t *telem);
+static void ttc_send_ack(bus_msg_t* msg);
 static void ttc_process_frame(uint8_t *frame, size_t len);
 
 //Main RTOS ttc_task loop
@@ -36,7 +37,7 @@ static void ttc_task(void *pvParameters){
                 ttc_send_telem((pkt_telem_t *)msg.data);
             }
             if(msg.type == MSG_ACK){
-                uart_gs_send(msg.data, msg.len); //already framed packet (cdh_send_ack())
+                ttc_send_ack(&msg); 
             }
         }
         //RX: UART -> CMD -> CDH
@@ -99,6 +100,13 @@ static void ttc_send_telem(pkt_telem_t *telem){
 
     uart_gs_send(tx_encoded, enc_len); //Send via UART
     ESP_LOGI(TAG, "Sent telemetry (%d bytes)", enc_len);
+}
+
+static void ttc_send_ack(bus_msg_t* msg){
+    size_t enc_len = cobs_encode(msg->data, msg->len, tx_encoded);
+    tx_encoded[enc_len++] = 0x00;
+    uart_gs_send(tx_encoded, enc_len);
+    ESP_LOGI(TAG, "Sent ACK (%d bytes)", enc_len);
 }
 
 //TTC recieve and decode frames (header/payload -> CMD)
